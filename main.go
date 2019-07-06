@@ -30,16 +30,15 @@ func main() {
 			log.Printf("FAILED %v", err)
 			conn.Printf("pingcheck.run.failed:1|g\n")
 		} else {
-			pinger.Count = 5
+			pinger.Count = 3
+			pinger.SetPrivileged(true)
 			pinger.Run()
 			s := pinger.Statistics()
 
-			log.Printf("OK loss: %.3f rtt avg: %v", s.PacketLoss, s.AvgRtt)
+			log.Printf("OK loss: %.3f rtt: %v", s.PacketLoss, s.AvgRtt)
 			conn.Printf("pingcheck.run.ok:1|g\n")
 			conn.Printf("pingcheck.packet_loss:%.3f|g\n", s.PacketLoss)
-			conn.Printf("pingcheck.rtt_min:%d|ms\n", s.MinRtt)
-			conn.Printf("pingcheck.rtt_max:%d|ms\n", s.MaxRtt)
-			conn.Printf("pingcheck.rtt_avg:%d|ms\n", s.AvgRtt)
+			conn.Printf("pingcheck.rtt:%d|ms\n", s.AvgRtt/time.Millisecond)
 		}
 
 		time.Sleep(sleep)
